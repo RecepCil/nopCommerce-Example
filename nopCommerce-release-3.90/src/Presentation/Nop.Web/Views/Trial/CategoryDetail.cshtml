@@ -1,0 +1,24 @@
+﻿@model Nop.Core.Domain.Catalog.Category
+@using Nop.Web.Models.Catalog;
+
+@{
+    ViewBag.Title = "CategoryDetail";
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+}
+
+<h2>CategoryDetail</h2>
+
+
+
+
+
+<div class="row">
+        <div class="col-sm-4">
+            <span class="tag">@Model.Id</span>
+        </div>
+        <div class="col-sm-4">
+            <span class="tag">@Model.Name</span>
+        </div>
+        <div class="col-sm-4">
+            <span class="tag">@Model.Description</span>
+        </div>

@@ -1,0 +1,95 @@
+﻿@model Nop.Admin.Models.Catalog.CarouselModel
+
+@{
+                /**/
+
+                Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+}
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div id="product-edit" class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="raw clearfix">
+                        <div class="col-md-12">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>CAROUSEL</b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Link)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.Link))
+                                                    @Html.ValidationMessageFor(model => model.Link)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Description)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.Description))
+                                                    @Html.ValidationMessageFor(model => model.Description)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.DisplayOrder)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.DisplayOrder))
+                                                    @Html.ValidationMessageFor(model => model.DisplayOrder)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.IsActive)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.IsActive))
+                                                    @Html.ValidationMessageFor(model => model.IsActive)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.StartDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.StartDate))
+                                                    @Html.ValidationMessageFor(model => model.StartDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.FinishDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.FinishDate))
+                                                    @Html.ValidationMessageFor(model => model.FinishDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Path)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.Path))
+                                                    <img src="@Model.Path" />
+                                                    @Html.ValidationMessageFor(model => model.Path)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

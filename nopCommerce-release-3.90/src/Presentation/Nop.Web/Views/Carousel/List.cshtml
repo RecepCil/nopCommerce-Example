@@ -1,0 +1,314 @@
+﻿@model Nop.Admin.Models.Catalog.CarouselListModel
+
+@using Nop.Core.Domain.Catalog
+@{
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Catalog.Carousels")
+        </h1>
+        <div class="pull-right">
+            <a href="@Url.Action("Create")" class="btn bg-blue">
+                <i class="fa fa-plus-square"></i>
+                @T("Admin.Common.AddNew")
+            </a>
+            <button type="submit" name="download-catalog-pdf" class="btn bg-purple">
+                <i class="fa fa-file-pdf-o"></i>
+                @T("Admin.Catalog.Products.List.DownloadPDF")
+            </button>
+
+            <button type="button" id="delete-selected" class="btn bg-red">
+                <i class="fa fa-trash-o"></i>
+                @T("Admin.Common.Delete.Selected")
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.NopLabelFor(model => model.SearchLink)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.NopEditorFor(model => model.SearchLink)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.NopLabelFor(model => model.IsActive)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.NopEditorFor(model => model.IsActive)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+
+
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.NopLabelFor(model => model.SearchDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.NopEditorFor(model => model.SearchDate)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.NopLabelFor(model => model.SearchLink)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="input-group input-group-short">
+                                            @Html.NopEditorFor(model => model.SearchLink)
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span class="input-group-btn">
+                                    <button type="submit" id="go-to-product-by-sku" name="go-to-product-by-sku" class="btn btn-info btn-flat">
+                                        <i class="fa fa-search"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                    <button type="submit" id="search-carousels" name="search-carousels" class="btn btn-info btn-flat">
+                                        <i class="fa fa-search"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </span>
+
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7 col-md-offset-5">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div id="carousels-grid"></div>
+
+                        <script>
+                            $(document).ready(function() {
+                                $("#carousels-grid").kendoGrid({
+                                    dataSource: {
+                                        type: "json",
+                                        transport: {
+                                            read: {
+                                                url: "@Html.Raw(Url.Action("CarouselList", "Carousel"))",
+                                                type: "POST",
+                                                dataType: "json"
+                                            }
+                                        },
+                                        schema: {
+                                            data: "Data",
+                                            total: "Total",
+                                            errors: "Errors"
+                                        },
+                                        error: function(e) {
+                                            display_kendoui_grid_error(e);
+                                            // Cancel the changes
+                                            this.cancelChanges();
+                                        },
+                                        pageSize: 15,
+                                        serverPaging: true,
+                                        serverFiltering: true,
+                                        serverSorting: true
+                                    },
+                                    pageable: {
+                                        refresh: true,
+                                        pageSizes: 15,
+                                        @Html.Partial("_GridPagerMessages")
+                                    },
+                                    editable: {
+                                        confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                                        mode: "inline"
+                                    },
+                                    scrollable: false,
+                                    dataBound: onDataBound,
+                                    columns: [
+                                        {
+                                            field: "Id",
+                                            headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
+                                            headerAttributes: { style: "text-align:center" },
+                                            attributes: { style: "text-align:center" },
+                                            template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/> ",/*< h1 >#=Id#</h1 >*/
+                                            width: 50
+                                        }, {
+                                            field: "Link",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.Link")",
+                                            width: 300
+                                        }, {
+                                            field: "Image",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.Path")",
+                                            template: '<img style="width:150px;height:150px;" src="#=Path#" />'
+                                        },  {
+                                            field: "Description",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.Description")",
+                                            width: 300
+                                        }, {
+                                            field: "DisplayOrder",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.DisplayOrder")",
+                                            width: 100
+                                        },  {
+                                            field: "Path",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.Path")",
+                                            width: 100
+                                        },{
+                                            field: "StartDate",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.StartDate")",
+                                            template: '#=StartDate#'
+                                        }, {
+                                            field: "FinishDate",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.FinishDate")",
+                                            template: '#=FinishDate#'
+                                        }, {
+                                            field: "IsActive",
+                                            title: "@T("Admin.Catalog.Carousels.Fields.IsActive")",
+                                            width: 100
+                                            //template: '# if(Published) {# <i class="fa fa-check true-icon"></i> #} else {# <i class="fa fa-close false-icon"></i> #} #'
+                                        }, {
+                                            field: "Id",
+                                            title: "@T("Admin.Common.Edit")",
+                                            width: 100,
+                                            headerAttributes: { style: "text-align:center" },
+                                            attributes: { style: "text-align:center" },
+                                            template: '<a class="btn btn-default" href="Edit/#=Id#"><i class="fa fa-pencil"></i>@T("Admin.Common.Edit")</a>'
+                                        }
+                                    ]
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+                var selectedIds = [];
+
+                $(document).ready(function () {
+                    //search button
+                    $('#search-carousels').click(function () {
+                        //search
+                        var grid = $('#carousels-grid').data('kendoGrid');
+                        grid.dataSource.page(1); //new search. Set page size to 1
+                        //grid.dataSource.read(); we already loaded the grid above using "page" function
+                        //clear selected checkboxes
+                        $('.checkboxGroups').attr('checked', false).change();
+                        selectedIds = [];
+                        return false;
+                    });
+
+                   $("#@Html.FieldIdFor(model => model.SearchLink)").keydown(function (event) {
+                        if (event.keyCode === 13) {
+                            $("#search-carousels").click();
+                            return false;
+                        }
+                    });
+
+                        $("#@Html.FieldIdFor(model => model.SearchLink)").keydown(function (event) {
+                        if (event.keyCode === 13) {
+                            $("#go-to-product-by-sku").click();
+                            return false;
+                        }
+                    });
+
+                    //delete selected
+                    $('#delete-selected').click(function(e) {
+                        e.preventDefault();
+
+                        var postData = {
+                            selectedIds: selectedIds
+                        };
+                        addAntiForgeryToken(postData);
+
+                        $.ajax({
+                            cache: false,
+                            type: "POST",
+                            url: "@(Url.Action("DeleteSelected", "Carousel"))",
+                            data: postData,
+                            complete: function(data) {
+                                //reload grid
+                                var grid = $('#carousels-grid').data('kendoGrid');
+                                grid.dataSource.read();
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                alert(thrownError);
+                            },
+                            traditional: true
+                        });
+                        return false;
+                    });
+
+                    $('#mastercheckbox').click(function () {
+                        $('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+                    });
+
+                    //wire up checkboxes.
+                    $('#carousels-grid').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function (e) {
+                        var $check = $(this);
+                        if ($check.is(":checked") == true) {
+                            var checked = jQuery.inArray($check.val(), selectedIds);
+                            if (checked == -1) {
+                                //add id to selectedIds.
+                                selectedIds.push($check.val());
+                            }
+                        }
+                        else {
+                            var checked = jQuery.inArray($check.val(), selectedIds);
+                            if (checked > -1) {
+                                //remove id from selectedIds.
+                                selectedIds = $.grep(selectedIds, function (item, index) {
+                                    return item != $check.val();
+                                });
+                            }
+                        }
+                        updateMasterCheckbox();
+                    });
+                });
+                function additionalData() {
+                    var data = {
+                        SearchLink: $('#@Html.FieldIdFor(model => model.SearchLink)').val(),
+                        SearchDate: $('#@Html.FieldIdFor(model => model.SearchDate)').val(),
+                        IsActive: $('#@Html.FieldIdFor(model => model.IsActive)').is(':checked')
+                    };
+                    addAntiForgeryToken(data);
+                    return data;
+                }
+
+        function onDataBound(e) {
+            $('#carousels-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').each(function () {
+                var currentId = $(this).val();
+                var checked = jQuery.inArray(currentId, selectedIds);
+                //set checked based on if current checkbox's value is in selectedIds.
+                $(this).attr('checked', checked > -1);
+            });
+
+                    updateMasterCheckbox();
+                }
+
+        function updateMasterCheckbox() {
+            var numChkBoxes = $('#carousels-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').length;
+            var numChkBoxesChecked = $('#carousels-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]:checked').length;
+            $('#mastercheckbox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+        }
+    </script>
+}
+

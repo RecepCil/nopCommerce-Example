@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Nop.Core.Domain.Catalog.Category>
+@using Nop.Web.Models.Catalog;
+@{
+
+    /**/
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    /**/
+
+    ViewBag.Title = "Recep";
+}
+
+
+    <div class="row">
+        @foreach (var rapor in Model)
+        {
+            <div class="col-sm-4">
+                <span class="tag">@rapor.Id</span>
+            </div>
+            <div class="col-sm-4">
+                <span class="tag">@rapor.Name</span>
+            </div>
+            <div class="col-sm-4">
+                <a href="~/Trial/CategoryDetail/@rapor.Id"> Detail </a>
+            </div>
+            <div class="col-sm-4">
+                <a href="~/Trial/CategoryDetail/@rapor.Id"> Update </a>
+            </div>
+            <div class="col-sm-4">
+                <a href="~/Trial/CategoryDetail/@rapor.Id"> Delete </a>
+            </div>
+        }
+        <!-- Listing Item / End -->
+
+
+
+        <img src="https://www.desktopbackground.org/p/2010/10/30/103186_rihanna-hd-wallpapers-for-iphone_2048x2698_h.jpg" alt="Sample Photo" />
+

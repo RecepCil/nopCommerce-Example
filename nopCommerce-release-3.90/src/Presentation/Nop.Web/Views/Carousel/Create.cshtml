@@ -1,0 +1,267 @@
+﻿@model Nop.Admin.Models.Catalog.CarouselModel
+
+@{
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+@*<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Create</title>
+    </head>
+    <body>
+        @using (Html.BeginForm("Create", "Carousel",FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            <h2>CarouselModel</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Link, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Link, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Link, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.IsActive)
+                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FinishDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FinishDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FinishDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AdditionDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.AdditionDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AdditionDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Path, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Path, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Path, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="Image" value="" />
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+        }
+
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </body>
+    </html>*@
+
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @T("Admin.Catalog.Products")
+    </h1>
+    <div class="pull-right">
+        <a href="@Url.Action("Create")" class="btn bg-blue">
+            <i class="fa fa-plus-square"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+        <button type="submit" name="download-catalog-pdf-recep" class="btn bg-purple">
+            <i class="fa fa-file-pdf-o"></i>
+            @T("Admin.Catalog.Products.List.DownloadPDF")
+        </button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-success">
+                <i class="fa fa-download"></i>
+                @T("Admin.Common.Export")
+            </button>
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">&nbsp;</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <button type="submit" name="exportxml-all">
+                        <i class="fa fa-file-code-o"></i>
+                        @T("Admin.Common.ExportToXml.All")
+                    </button>
+                </li>
+                <li>
+                    <button type="button" id="exportxml-selected">
+                        <i class="fa fa-file-code-o"></i>
+                        @T("Admin.Common.ExportToXml.Selected")
+                    </button>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <button type="submit" name="exportexcel-all">
+                        <i class="fa fa-file-excel-o"></i>
+                        @T("Admin.Common.ExportToExcel.All")
+                    </button>
+                </li>
+                <li>
+                    <button type="button" id="exportexcel-selected">
+                        <i class="fa fa-file-excel-o"></i>
+                        @T("Admin.Common.ExportToExcel.Selected")
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <button type="button" id="delete-selected" class="btn bg-red">
+            <i class="fa fa-trash-o"></i>
+            @T("Admin.Common.Delete.Selected")
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+@using (Html.BeginForm("Create", "Carousel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="content-header clearfix">
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>Create
+            </button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="form-horizontal">
+            <div id="product-edit" class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="raw clearfix">
+                        <div class="col-md-12">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>CAROUSEL</b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Link)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.Link)
+                                                    @Html.ValidationMessageFor(model => model.Link)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Description)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.Description) <!--RichEditor-->
+                                                    @Html.ValidationMessageFor(model => model.Description)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.DisplayOrder)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.DisplayOrder)
+                                                    @Html.ValidationMessageFor(model => model.DisplayOrder)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.IsActive)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.IsActive)
+                                                    @Html.ValidationMessageFor(model => model.IsActive)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.StartDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.StartDate)
+                                                    @Html.ValidationMessageFor(model => model.StartDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.FinishDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.FinishDate)
+                                                    @Html.ValidationMessageFor(model => model.FinishDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.FinishDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <input type="file" name="Image" value="" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,176 @@
+﻿@model Nop.Admin.Models.Catalog.CarouselModel
+
+@{
+    /**/
+
+    Layout = "~/Administration/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "Carousel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Catalog.Carousels.EditPCarouselDetails") - @Model.Link
+            <small><i class="fa fa-arrow-circle-left"></i>@Html.ActionLink(T("Admin.Catalog.Carousels.BackToList").Text, "List")</small>
+        </h1>
+
+        <div class="pull-right">
+
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            <button type="button" name="copyproduct" class="btn bg-olive" data-toggle="modal" data-target="#copyproduct-window">
+                <i class="fa fa-clone"></i>
+                @T("Admin.Catalog.Carousels.Copy")
+            </button>
+            <span id="carousel-delete" class="btn bg-red">
+                <i class="fa fa-trash-o"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+
+    </div>
+    <div class="content">
+        <div class="form-horizontal">
+            <div id="product-edit" class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="raw clearfix">
+                        <div class="col-md-12">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>CAROUSEL</b>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Link)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.Link)
+                                                    @Html.ValidationMessageFor(model => model.Link)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Description)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.Description) <!--RichEditor-->
+                                                    @Html.ValidationMessageFor(model => model.Description)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.DisplayOrder)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.DisplayOrder)
+                                                    @Html.ValidationMessageFor(model => model.DisplayOrder)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.IsActive)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.IsActive)
+                                                    @Html.ValidationMessageFor(model => model.IsActive)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.StartDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.StartDate)
+                                                    @Html.ValidationMessageFor(model => model.StartDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.FinishDate)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopEditorFor(model => model.FinishDate)
+                                                    @Html.ValidationMessageFor(model => model.FinishDate)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    @Html.NopLabelFor(model => model.Path)
+                                                </div>
+                                                <div class="col-md-9">
+                                                    @Html.NopDisplay(@Convert.ToString(@Model.Path))
+                                                    <img src="@Model.Path" />
+                                                    @Html.ValidationMessageFor(model => model.Path)
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    <div class="label-wrapper"><label class="control-label"> @T("admin.catalog.carousels.fields.image")</label></div>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <input type="file" name="Image" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@Html.DeleteConfirmation("carousel-delete")
+
+<div id="copyproduct-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="copyproduct-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="copyproduct-window-title">@T("Admin.Catalog.Carousels.Copy")</h4>
+            </div>
+            @using (Html.BeginForm("CopyCarousel", "Carousel"))
+            {
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.Id)
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                @Html.NopLabelFor(model => model.Link)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.NopEditorFor(model => model.Link)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <div class="label-wrapper"><label class="control-label"> @T("admin.catalog.carousels.fields.image")</label></div>
+                            </div>
+                            <div class="col-md-8">
+                                <img src="@Model.Path" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            @T("Admin.Catalog.Carousels.Copy")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
