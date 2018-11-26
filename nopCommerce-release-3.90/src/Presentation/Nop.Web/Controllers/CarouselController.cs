@@ -1,4 +1,4 @@
-﻿using Nop.Admin.Extensions;
+﻿
 using Nop.Admin.Models.Catalog;
 using Nop.Core.Domain.Catalog;
 using Nop.Services.Catalog;
@@ -97,12 +97,7 @@ namespace Nop.Web.Controllers
         [HttpPost]
         public virtual ActionResult CarouselList(DataSourceRequest command, CarouselListModel model)
         {
-             var carousels = _carouselService.GetAllCarousels();
-            //var carousels = _carouselService.SearchCarousels(
-            //    Link: "JerrySmith",
-            //    IsActive: true,
-            //    SearchDate: DateTime.UtcNow
-            //      );
+             var carousels = _carouselService.SearchCarousel(model.SearchDate, model.IsActive);
 
             var gridModel = new DataSourceResult();
 
@@ -250,23 +245,16 @@ namespace Nop.Web.Controllers
         }
 
         #endregion
-        [HttpPost, ActionName("List")]
-        [FormValueRequired("go-to-product-by-sku")]
-        public virtual ActionResult GoToSku(CarouselListModel model)
-        {
-            // İsmini değiştr-tüm  columnları kapsaacak bir şey olsun
-            // Gelen tek bir property'e göre carouselleri döndür
-            // 3'ü için de yap
-            // Sonra bunları birleştir (Join falan)
-            // Sonucu döndür
 
-            string sku = "asd";
-
-
-
-            //not found
-            return RedirectToAction("CarouselList");
-        }
         #endregion
+
+        [HttpPost]
+        public virtual ActionResult Trial(string Link,string SearchDate,bool IsActive)
+        {
+            return View();
+        }
+
+      
+
     }
 }

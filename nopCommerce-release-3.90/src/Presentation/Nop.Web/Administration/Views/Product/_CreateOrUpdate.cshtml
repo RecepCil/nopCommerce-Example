@@ -24,7 +24,7 @@
                 }
             </div>
         </div>
-        
+
         <div id="product-edit" class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 @Html.RenderBootstrapTabHeader("tab-info", @T("Admin.Catalog.Products.Info"), true)
@@ -58,7 +58,7 @@
                 }
             </div>
         </div>
-        
+
     </div>
 </div>
 
@@ -76,36 +76,36 @@
 <input type="hidden" id="selected-tab-name" name="selected-tab-name" value="@(Html.GetSelectedTabName())">
 
 @helper TabInfo()
-{
+{<h2>Info</h2>
     @Html.Partial("_CreateOrUpdate.Info", Model)
 }
 
 @helper TabSeo()
-{
-    @Html.Partial("_CreateOrUpdate.SEO", Model)
+{<h2>SEO</h2>
+    @Html.Partial("_CreateOrUpdate.SEO", Model)<h2>SEO</h2>
 }
 
 @helper TabPictures()
-{
-    @Html.Partial("_CreateOrUpdate.Pictures", Model)
+{<h2>Pictures</h2>
+    @Html.Partial("_CreateOrUpdate.Pictures", Model)<h2>Pictures</h2>
 }
 
 @helper TabProductAttributes()
-{
-    @Html.Partial("_CreateOrUpdate.ProductAttributes", Model)
+{<h2>ProductAttributes</h2>
+    @Html.Partial("_CreateOrUpdate.ProductAttributes", Model)<h2>ProductAttributes</h2>
 }
 
 @helper TabSpecificationAttributes()
-{
-    @Html.Partial("_CreateOrUpdate.SpecificationAttributes", Model)
+{<h2>SpecificationAttributes</h2>
+    @Html.Partial("_CreateOrUpdate.SpecificationAttributes", Model)<h2>SpecificationAttributes</h2>
 }
 
 @helper TabPurchasedWithOrders()
-{
-    @Html.Partial("_CreateOrUpdate.PurchasedWithOrders", Model)
+{<h2>PurchasedWithOrders</h2>
+    @Html.Partial("_CreateOrUpdate.PurchasedWithOrders", Model)<h2>PurchasedWithOrders</h2>
 }
 
 @helper TabStockQuantityHistory()
-{
-    @Html.Partial("_CreateOrUpdate._StockQuantityHistory", Model)
+{<h2>_StockQuantityHistory</h2>
+    @Html.Partial("_CreateOrUpdate._StockQuantityHistory", Model)<h2>_StockQuantityHistory</h2>
 }

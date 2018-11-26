@@ -267,26 +267,9 @@ namespace Nop.Admin.Infrastructure.Mapper
                     .ForMember(dest => dest.Deleted, mo => mo.Ignore());
 
                 // A Mapping Configuration
-                cfg.CreateMap<Carousel, CarouselModel>()
-                    .ForMember(dest => dest.Link, mo => mo.Ignore())
-                    .ForMember(dest => dest.Path, mo => mo.Ignore())
-                    .ForMember(dest => dest.Description, mo => mo.Ignore())
-                    .ForMember(dest => dest.DisplayOrder, mo => mo.Ignore())
-                    .ForMember(dest => dest.IsActive, mo => mo.Ignore())
-                    .ForMember(dest => dest.StartDate, mo => mo.Ignore())
-                    .ForMember(dest => dest.FinishDate, mo => mo.Ignore())
-                    .ForMember(dest => dest.AdditionDate, mo => mo.Ignore())
-                    .ForMember(dest => dest.CustomProperties, mo => mo.Ignore());
+                cfg.CreateMap<Carousel, CarouselModel>();
 
-                cfg.CreateMap<CarouselModel, Carousel>()
-                    .ForMember(dest => dest.Link, mo => mo.Ignore())
-                    .ForMember(dest => dest.Path, mo => mo.Ignore())
-                    .ForMember(dest => dest.Description, mo => mo.Ignore())
-                    .ForMember(dest => dest.DisplayOrder, mo => mo.Ignore())
-                    .ForMember(dest => dest.IsActive, mo => mo.Ignore())
-                    .ForMember(dest => dest.StartDate, mo => mo.Ignore())
-                    .ForMember(dest => dest.FinishDate, mo => mo.Ignore())
-                    .ForMember(dest => dest.AdditionDate, mo => mo.Ignore());
+                cfg.CreateMap<CarouselModel, Carousel>();
 
                 //products
                 cfg.CreateMap<Product, ProductModel>()

@@ -1381,8 +1381,8 @@ namespace Nop.Services.Common
 
             foreach (var carousel in carousels)
             {
-                string carouselLink = carousel.GetLocalized(x => x.Link, lang.Id);
-                string carouselDescription = carousel.GetLocalized(x => x.Description, lang.Id);
+                string carouselLink = carousel.Link;// carousel.GetLocalized(x => x.Link, lang.Id);
+                string carouselDescription = carousel.Description;//carousel.GetLocalized(x => x.Description, lang.Id);
 
                 var carouselTable = new PdfPTable(1);
                 carouselTable.WidthPercentage = 100f;

@@ -10,17 +10,50 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Nop.Core.Domain.Catalog
-{                                     //Id
-    public partial class Carousel : BaseEntity//, ILocalizedEntity, ISlugSupported
+{
+    /// <summary>
+    /// Represents a carousel
+    /// </summary>
+    public partial class Carousel : BaseEntity, ILocalizedEntity, ISlugSupported
     {
+        /// <summary>
+        /// Gets or sets the link
+        /// </summary>
         public string Link { get; set; }
-        public string Path { get; set; }
-        public string Description { get; set; }
-        public int DisplayOrder { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime FinishDate { get; set; }
-        public DateTime AdditionDate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the path of the image of the carousel
+        /// </summary>
+        public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the display order
+        /// </summary>
+        public int DisplayOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets that is carousel active
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Gets or sets the starting date
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the finishing date
+        /// </summary>
+        public DateTime FinishDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the addition date
+        /// </summary>
+        public DateTime AdditionDate { get; set; }
     }
 }

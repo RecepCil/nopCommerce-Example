@@ -20,7 +20,6 @@ namespace Nop.Services.Catalog
     /// </summary>
     public partial class CarouselService : ICarouselService
     {
-
         #region Fields
 
         private readonly IRepository<Carousel> _carouselRepository;
@@ -100,12 +99,14 @@ namespace Nop.Services.Catalog
         }
 
         /// <summary>
-        /// Gets all carousels
+        /// Gets block carousels
         /// </summary>
         /// <returns>Carousels</returns>
-        public virtual IList<Carousel> GetAllCarousels()
+        public virtual IList<Carousel> GetBlockCarousels()
         {
             var query = from p in _carouselRepository.Table
+                        where p.IsActive == true
+                        orderby p.DisplayOrder descending
                         select p;
 
             var carousels = query.ToList();
@@ -124,6 +125,27 @@ namespace Nop.Services.Catalog
                 return null;
 
             return _carouselRepository.GetById(carouselId);
+        }
+
+        /// <summary>
+        /// Gets carousel
+        /// </summary>
+        /// <param name="searchDate">Carousel identifier</param>
+        /// /// <param name="searchOnlyActiveOnes">Carousel identifier</param>
+        /// <returns>Carousel</returns>
+        public IList<Carousel> SearchCarousel(DateTime searchDate=default(DateTime), bool searchOnlyActiveOnes=false)
+        {
+            var query = _carouselRepository.Table;
+
+            if (searchDate != new DateTime())
+            {
+                query = query.Where(x => x.StartDate <= searchDate && x.FinishDate >= searchDate);
+            }
+
+            if (searchOnlyActiveOnes)
+                query = query.Where(x => x.IsActive == searchOnlyActiveOnes);
+
+            return query.ToList();
         }
 
         /// <summary>
@@ -179,24 +201,6 @@ namespace Nop.Services.Catalog
 
             //event notification
             _eventPublisher.EntityUpdated(carousel);
-        }
-
-        /// <summary>
-        /// Search carousels
-        /// </summary>
-        /// <param name="Link"> Link of the carousel</param>
-        /// <param name="IsActive"> Is the carousel active?</param>
-        /// <param name="categoryIds">Query by date</param>
-        /// <returns>Carousels</returns>
-        public virtual IPagedList<Carousel> SearchCarousels(string Link, bool IsActive, DateTime SearchDate, int pageIndex = 0, int pageSize = int.MaxValue)
-        {
-            var query = from p in _carouselRepository.Table
-                        where p.Link == Link || p.IsActive == IsActive
-                        select p;
-
-            var carousels = query.ToList();
-
-            return null;
         }
 
         #endregion

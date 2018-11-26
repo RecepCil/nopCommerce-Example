@@ -72,6 +72,7 @@ namespace Nop.Data
         public virtual void Insert(T entity)
         {
             try
+
             {
                 if (entity == null)
                     throw new ArgumentNullException("entity");

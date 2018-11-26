@@ -16,6 +16,7 @@ namespace Nop.Admin.Validators.Catalog
         public CarouselValidator(ILocalizationService localizationService, IDbContext dbContext)
         {
             RuleFor(x => x.Link).NotEmpty().WithMessage(localizationService.GetResource("Admin.Catalog.Carousels.Fields.Link.Required"));
+
             SetDatabaseValidationRules<Carousel>(dbContext);
         }
     }

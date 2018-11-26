@@ -12,7 +12,7 @@ using Nop.Web.Framework.Mvc;
 namespace Nop.Admin.Models.Catalog
 {
     [Validator(typeof(ProductValidator))]
-    public partial class ProductModel : BaseNopEntityModel, ILocalizedModel<ProductLocalizedModel>
+    public partial class ProductModel : BaseNopEntityModel//, ILocalizedModel<ProductLocalizedModel>
     {
         public ProductModel()
         {

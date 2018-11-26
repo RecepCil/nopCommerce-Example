@@ -2933,7 +2933,52 @@ namespace Nop.Admin.Controllers
         }
 
         #endregion
-        
+
+
+        #region Sales
+
+        public virtual ActionResult SaleList()
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageOrders))
+                return AccessDeniedView();
+
+            var model = new ShipmentListModel();
+            //countries
+            model.AvailableCountries.Add(new SelectListItem { Text = "*", Value = "0" });
+            foreach (var c in _countryService.GetAllCountries(showHidden: true))
+                model.AvailableCountries.Add(new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
+            //states
+            model.AvailableStates.Add(new SelectListItem { Text = "*", Value = "0" });
+
+            //warehouses
+            model.AvailableWarehouses.Add(new SelectListItem { Text = _localizationService.GetResource("Admin.Common.All"), Value = "0" });
+            foreach (var w in _shippingService.GetAllWarehouses())
+                model.AvailableWarehouses.Add(new SelectListItem { Text = w.Name, Value = w.Id.ToString() });
+
+            return View(model);
+
+            //if (!_permissionService.Authorize(StandardPermissionProvider.ManageOrders))
+            //    return AccessDeniedView();
+
+            //var model = new SaleListModel();
+            //model.Id = 1;
+            //model.EndDate = DateTime.Now;
+            //model.Profit = 1;
+            //model.SalesNumber = 1;
+            //model.StartDate = DateTime.Now;
+            //model.TotalCost = 1;
+            //model.TotalSales = 1;
+
+            //return View(model);
+        }
+
+
+        #endregion
+
+
+
+
+
         #region Shipments
 
         public virtual ActionResult ShipmentList()

@@ -144,17 +144,49 @@ namespace Nop.Admin.Extensions
 
         #endregion
 
+        #region Carousel
 
+        public static CarouselModel ToModel(this Carousel entity)
+        {
+            return entity.MapTo<Carousel, CarouselModel>();
+        }
+        public static CarouselModel ToModel(this Carousel entity, CarouselModel destination)
+        {
+            //return entity.MapTo(destination);
 
+            if (entity == null)
+                return destination;
 
+            if (entity.Description != null)
+                entity.Description = entity.Description.Trim();
+            if (entity.Path != null)
+                entity.Path = entity.Path.Trim();
+            if (entity.Link != null)
+                entity.Link = entity.Link.Trim();
 
+            destination.Id = entity.Id;
+            destination.Link = entity.Link;
+            destination.Path = entity.Path;
+            destination.Description = entity.Description;
+            destination.DisplayOrder = entity.DisplayOrder;
+            destination.IsActive = entity.IsActive;
+            destination.StartDate = entity.StartDate;
+            destination.FinishDate = entity.FinishDate;
+            destination.AdditionDate = entity.AdditionDate;
 
+            return destination;
+        }
 
+        public static Carousel ToEntity(this CarouselModel model)
+        {
+            return model.MapTo<CarouselModel, Carousel>(); 
+        }
+        public static Carousel ToEntity(this CarouselModel model, Carousel destination)
+        {
+            return model.MapTo(destination);
+        }
 
-
-
-
-
+        #endregion
 
         #region Product attributes
 
