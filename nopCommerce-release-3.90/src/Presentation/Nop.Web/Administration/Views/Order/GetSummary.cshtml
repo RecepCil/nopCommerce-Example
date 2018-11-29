@@ -1,0 +1,43 @@
+﻿@model SaleViewModel
+
+@{
+    Layout = null;
+}
+
+<h1>
+    Summary
+</h1>
+
+@using (Html.BeginForm())
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div id="sales-grid2" data-role="grid" class="k-grid k-widget">
+                <table role="treegrid">
+                    <colgroup>
+                        <col style="width:100px">
+                        <col style="width:100px">
+                        <col style="width:100px">
+                        <col style="width:100px">
+                    </colgroup>
+                    <thead class="k-grid-header" role="rowgroup">
+                        <tr role="row">
+                            <th role="columnheader" class="k-header">Transaction Number</th>
+                            <th role="columnheader" class="k-header">Total Sales</th>
+                            <th role="columnheader" class="k-header">Total Cost</th>
+                            <th role="columnheader" class="k-header">Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody role="rowgroup">
+                        <tr class="k-master-row" data-uid="6aa34ab0-f290-4859-aa03-454fa26008f1" role="row">
+                            <td role="gridcell"> @Model.TransactionNumber  </td>
+                            <td role="gridcell"> @Model.TotalSales   </td>
+                            <td role="gridcell"> @Model.TotalCost  </td>
+                            <td role="gridcell"> @Model.Profit  </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

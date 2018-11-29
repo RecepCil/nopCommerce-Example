@@ -243,6 +243,50 @@ namespace Nop.Services.Orders
         }
 
         /// <summary>
+        /// Search completed sales
+        /// </summary>
+        /// <param name="startPaidDateUtc">Paid date from (UTC); null to load all records</param>
+        /// <param name="endPaidDateUtc">Paid date from (UTC); null to load all records</param>
+        /// <returns>Orders</returns>
+        public virtual IPagedList<Order> SearchSales(DateTime? startPaidDateUtc = null, DateTime? endPaidDateUtc = null,
+            int pageIndex = 0, int pageSize = int.MaxValue)
+        {
+            var query = from orderItem in _orderRepository.Table
+                        where orderItem.PaidDateUtc != null
+                        select orderItem;
+
+            if (startPaidDateUtc.HasValue)
+                query = query.Where(o => startPaidDateUtc.Value <= o.PaidDateUtc);
+            if (endPaidDateUtc.HasValue)
+                query = query.Where(o => endPaidDateUtc.Value >= o.PaidDateUtc);
+
+            query = query.Where(o => !o.Deleted);
+            query = query.OrderByDescending(o => o.CreatedOnUtc);
+
+            //database layer paging
+            return new PagedList<Order>(query, pageIndex, pageSize);
+        }
+
+        /// <summary>
+        /// Get all completed sales
+        /// </summary>
+        /// <returns>Sales</returns>
+        public virtual IPagedList<Order> GetAllSales()
+        {
+            var query = from orderItem in _orderRepository.Table
+                        where orderItem.PaidDateUtc != null
+                        select orderItem;
+
+            query = query.Where(o => !o.Deleted);
+            query = query.OrderByDescending(o => o.CreatedOnUtc);
+
+            //database layer paging
+            return new PagedList<Order>(query, 0, int.MaxValue);
+        }
+
+
+
+        /// <summary>
         /// Inserts an order
         /// </summary>
         /// <param name="order">Order</param>

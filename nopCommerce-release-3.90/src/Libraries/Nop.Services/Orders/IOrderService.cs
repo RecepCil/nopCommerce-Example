@@ -58,6 +58,8 @@ namespace Nop.Services.Orders
         /// <param name="warehouseId">Warehouse identifier, only orders with products from a specified warehouse will be loaded; 0 to load all orders</param>
         /// <param name="paymentMethodSystemName">Payment method system name; null to load all records</param>
         /// <param name="createdFromUtc">Created date from (UTC); null to load all records</param>
+        /// <param name="startPaidDateUtc">Paid date from (UTC); null to load all records</param>
+        /// <param name="endPaidDateUtc">Paid date from (UTC); null to load all records</param>
         /// <param name="createdToUtc">Created date to (UTC); null to load all records</param>
         /// <param name="osIds">Order status identifiers; null to load all orders</param>
         /// <param name="psIds">Payment status identifiers; null to load all orders</param>
@@ -72,11 +74,25 @@ namespace Nop.Services.Orders
             int vendorId = 0, int customerId = 0,
             int productId = 0, int affiliateId = 0, int warehouseId = 0,
             int billingCountryId = 0, string paymentMethodSystemName = null,
-            DateTime? createdFromUtc = null, DateTime? createdToUtc = null,
+            DateTime? createdFromUtc = null, DateTime? createdToUtc = null, 
             List<int> osIds = null, List<int> psIds = null, List<int> ssIds = null,
-            string billingEmail = null, string billingLastName = "", 
+            string billingEmail = null, string billingLastName = "",
             string orderNotes = null, int pageIndex = 0, int pageSize = int.MaxValue);
-        
+
+        /// <summary>
+        /// Search completed sales
+        /// </summary>
+        /// <param name="startPaidDateUtc">Paid date from (UTC); null to load all records</param>
+        /// <param name="endPaidDateUtc">Paid date from (UTC); null to load all records</param>
+        /// <returns>Sales</returns>
+        IPagedList<Order> SearchSales(DateTime? startPaidDateUtc = null, DateTime? endPaidDateUtc = null, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// Get all completed sales
+        /// </summary>
+        /// <returns>Sales</returns>
+        IPagedList<Order> GetAllSales();
+
         /// <summary>
         /// Inserts an order
         /// </summary>

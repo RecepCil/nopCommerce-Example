@@ -105,7 +105,7 @@ namespace Nop.Services.Catalog
         public virtual IList<Carousel> GetBlockCarousels()
         {
             var query = from p in _carouselRepository.Table
-                        where p.IsActive == true
+                        where p.StartDate <= DateTime.Now && p.FinishDate >= DateTime.Now && p.IsActive == true 
                         orderby p.DisplayOrder descending
                         select p;
 
@@ -133,11 +133,11 @@ namespace Nop.Services.Catalog
         /// <param name="searchDate">Carousel identifier</param>
         /// /// <param name="searchOnlyActiveOnes">Carousel identifier</param>
         /// <returns>Carousel</returns>
-        public IList<Carousel> SearchCarousel(DateTime searchDate=default(DateTime), bool searchOnlyActiveOnes=false)
+        public IList<Carousel> SearchCarousel(DateTime? searchDate, bool searchOnlyActiveOnes=false)
         {
             var query = _carouselRepository.Table;
 
-            if (searchDate != new DateTime())
+            if (searchDate.HasValue)
             {
                 query = query.Where(x => x.StartDate <= searchDate && x.FinishDate >= searchDate);
             }

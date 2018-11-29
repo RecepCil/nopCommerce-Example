@@ -1,11 +1,11 @@
-﻿@model ShipmentListModel
+﻿@model SaleViewModel
 
 @{
     var defaultGridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().DefaultGridPageSize;
     var gridPageSizes = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSizes;
 
     //page title
-    ViewBag.Title = T("Admin.Orders.Shipments.List").Text;
+    ViewBag.Title = T("Admin.Orders.Sales.List").Text;
     //active menu item (system name)
     Html.SetActiveMenuItemSystemName("Shipments");
 }
@@ -15,47 +15,46 @@
     @Html.AntiForgeryToken()
     <div class="content-header clearfix">
         <h1 class="pull-left">
-            @T("Admin.Orders.Shipments.List")
+            @T("Admin.Orders.Sales.List")
         </h1>
         <div class="pull-right">
             <div class="btn-group">
-                <button type="button" class="btn bg-purple">
-                    <i class="fa fa-file-pdf-o"></i>
-                    @T("Admin.Orders.Shipments.PrintPackagingSlips")
+                <button type="button" class="btn btn-success">
+                    <i class="fa fa-download"></i>
+                    @T("Admin.Common.Export")
                 </button>
-                <button type="button" class="btn bg-purple dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <span class="caret"></span>
                     <span class="sr-only">&nbsp;</span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li>
-                        <button type="submit" name="exportpackagingslips-all">
-                            @T("Admin.Orders.Shipments.PrintPackagingSlips.All")
+                        <button type="submit" name="exportxml-sales">
+                            <i class="fa fa-file-code-o"></i>
+                            @T("Admin.Common.ExportToXml.All")
                         </button>
                     </li>
+                    <li class="divider"></li>
                     <li>
-                        <button type="button" id="exportpackagingslips-selected">
-                            @T("Admin.Orders.Shipments.PrintPackagingSlips.Selected")
+                        <button type="submit" name="exportexcel-sales">
+                            <i class="fa fa-file-excel-o"></i>
+                            @T("Admin.Common.ExportToExcel.All")
                         </button>
                     </li>
                 </ul>
             </div>
-            <button type="button" id="ship-selected" class="btn bg-aqua">
-                <i class="fa fa-truck"></i>
-                @T("Admin.Orders.Shipments.ShipSelected")
-            </button>
-            <button type="button" id="deliver-selected" class="btn bg-green">
-                <i class="fa fa-check-square-o"></i>
-                @T("Admin.Orders.Shipments.DeliverySelected")
-            </button>
+            <div class="btn-group">
+                <button type="submit" name="pdf-invoice-all"    class="btn btn-success">
+                    <i class="fa fa-file-pdf-o"></i>
+                    @T("Admin.Orders.Sales.List.DownloadPDF")
+                </button>
+            </div>
         </div>
     </div>
+
     <div class="content">
         <div class="form-horizontal">
             <div class="panel-group">
-
-                <h1>Step1</h1>
-
                 <div class="panel panel-default panel-search">
                     <div class="panel-body">
                         <div class="row">
@@ -79,124 +78,225 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-7 col-md-offset-5">
-                                    <button type="button" id="search-shipments" class="btn btn-primary btn-search">
-                                        <i class="fa fa-search"></i>
-                                        @T("Admin.Common.Search")
-                                    </button>
+                                    <span>
+                                        <button type="button" id="search-shipments" class="btn btn-primary btn-search">
+                                            <i class="fa fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <h1>Step2</h1>
-
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <div id="shipments-grid"></div>
-
+                        <div id="sales-grid"></div>
                         <script>
-                            $(document).ready(function () {
-                                $("#shipments-grid").kendoGrid({
-                                    dataSource: {
-                                        type: "json",
-                                        transport: {
-                                            read: {
-                                                url: "@Html.Raw(Url.Action("ShipmentListSelect", "Order"))",
-                                                type: "POST",
-                                                dataType: "json",
-                                                data: additionalData
+                                $(document).ready(function () {
+                                    $("#sales-grid").kendoGrid({
+                                        dataSource: {
+                                            type: "json",
+                                            transport: {
+                                                read: {
+                                                    url: "@Html.Raw(Url.Action("SaleListSelect", "Order"))",
+                                                    type: "POST",
+                                                    dataType: "json",
+                                                    data: additionalData
+                                                }
+                                            },
+                                            schema: {
+                                                data: "Data",
+                                                total: "Total",
+                                                errors: "Errors"
+                                            },
+                                            requestEnd: function (e) {
+                                                if (e.type == "read") {
+                                                    var response = e.response;
+                                                    if (response) {
+                                                        //store extra data
+                                                        reportSummary = e.response["ExtraData"];
+                                                    }
+                                                }
+                                            },
+                                        },
+                                            error: function(e) {
+                                                display_kendoui_grid_error(e);
+                                                // Cancel the changes
+                                                this.cancelChanges();
+                                            },
+                                            pageSize: @(defaultGridPageSize),
+                                            serverPaging: true,
+                                            serverFiltering: true,
+                                            serverSorting: true,
+                                        pageable: {
+                                            refresh: true,
+                                            pageSizes: [@(gridPageSizes)],
+                                            @Html.Partial("_GridPagerMessages")
+                                        },
+                                        detailInit: detailInit,
+                                        scrollable: false,
+                                        dataBound: onDataBound,
+                                        columns: [{
+                                            field: "Id",
+                                            headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
+                                            headerAttributes: { style: "text-align:center" },
+                                            attributes: { style: "text-align:center" },
+                                            template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
+                                            width: 20
+                                        }, {
+                                            field: "PaidDate",
+                                            title: "@T("Admin.Orders.Sales.PaidDate")",
+                                            width: 100,
+                                            type: "date",
+                                            format: "{0:G}"
+                                        }, {
+                                            field: "TotalSales",
+                                            title: "@T("Admin.Orders.Sales.TotalSales")",
+                                            width: 100
+                                        }, {
+                                            field: "TotalCost",
+                                            title: "@T("Admin.Orders.Sales.TotalCost")",
+                                            width: 100
+                                        }, {
+                                            field: "Profit",
+                                            title: "@T("Admin.Orders.Sales.Profit")",
+                                            width: 100
                                             }
+                                        ],
+                                        sortable: {
+                                            mode: "multiple",
+                                            allowUnsort: true,
+                                            showIndexes: true
                                         },
-                                        schema: {
-                                            data: "Data",
-                                            total: "Total",
-                                            errors: "Errors"
-                                        },
-                                        error: function(e) {
-                                            display_kendoui_grid_error(e);
-                                            // Cancel the changes
-                                            this.cancelChanges();
-                                        },
-                                        pageSize: @(defaultGridPageSize),
-                                        serverPaging: true,
-                                        serverFiltering: true,
-                                        serverSorting: true
-                                    },
-                                    pageable: {
-                                        refresh: true,
-                                        pageSizes: [@(gridPageSizes)],
-                                        @Html.Partial("_GridPagerMessages")
-                                    },
-                                                                        scrollable: false,
-                                    dataBound: onDataBound,
-                                    columns: [{
-                                        field: "Id",
-                                        headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
-                                        headerAttributes: { style: "text-align:center" },
-                                        attributes: { style: "text-align:center" },
-                                        template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
-                                        width: 50
-                                    }, {
-                                        field: "Id",
-                                        title: "@T("Admin.Orders.Shipments.ID")",
-                                        width: 50
-                                    }, {
-                                        field: "CustomOrderNumber",
-                                        title: "@T("Admin.Orders.Shipments.CustomOrderNumber")",
-                                        width: 100
-                                    }, {
-                                        field: "TrackingNumber",
-                                        title: "@T("Admin.Orders.Shipments.TrackingNumber")",
-                                        width: 100
-                                    }]
+                                        sort: function (e) {
+                                            console.log(e.sort.field);
+                                            console.log(e.sort.dir);
+                                        }
+                                    });
                                 });
-                            });
 
-                            
+                                  //details grid
+                                function detailInit(e) {
+                                    $("<div/>").appendTo(e.detailCell).kendoGrid({
+                                        dataSource: {
+                                            type: "json",
+                                            transport: {
+                                                read: {
+                                                    url: "@Html.Raw(Url.Action("SalesItemsByTransactionId", "Order"))?transactionId="+e.data.Id,
+                                                    type: "POST",
+                                                    dataType: "json",
+                                                    data: addAntiForgeryToken
+                                                }
+                                            },
+                                            schema: {
+                                                data: "Data",
+                                                total: "Total",
+                                                errors: "Errors"
+                                            },
+                                            error: function(e) {
+                                                display_kendoui_grid_error(e);
+                                                // Cancel the changes
+                                                this.cancelChanges();
+                                            },
+                                            serverPaging: true,
+                                            serverFiltering: true,
+                                            serverSorting: true
+                                        },
+                                        scrollable: false,
+                                        sortable: true,
+
+                                        pageable: {
+                                            refresh: true,
+                                            numeric: false,
+                                            previousNext: false,
+                                            info: false,
+                                            @Html.Partial("_GridPagerMessages")
+                                        },
+                                        columns: [
+                                            {
+                                                field: "ProductId",
+                                                title: "@T("Admin.Orders.Sales.Products.ProductId")",
+                                                width: 400
+                                            },{
+                                                field: "ProductName",
+                                                title: "@T("Admin.Orders.Sales.Products.ProductName")",
+                                                width: 150
+                                            },{
+                                                field: "Quantity",
+                                                title: "@T("Admin.Orders.Sales.Products.Quantity")",
+                                                width: 150
+                                            },{
+                                                field: "OriginalProductCost",
+                                                title: "@T("Admin.Orders.Sales.Products.OriginalProductCost")",
+                                                width: 150
+                                            }
+                                        ],
+                                        sortable: {
+                                            mode: "multiple",
+                                            allowUnsort: true,
+                                            showIndexes: true
+                                        },
+                                        sort: function (e) {
+                                            console.log(e.sort.field);
+                                            console.log(e.sort.dir);
+                                        }
+                                    });
+                                }
+
+                                $.get('@Url.Action("GetSummary", new { StartDate = default(DateTime?), EndDate = default(DateTime?) } )', function (data) {
+                                    var result = additionalData();
+                                    alert(result.StartDate);
+                                    //var note = new SaleViewModel{}
+                                    $('#getSummary').html(data);
+                                });
+
                         </script>
                     </div>
                 </div>
 
-                <h1>Step3</h1>
-
                 <script type="text/javascript">
                     var selectedIds = [];
+                    var reportSummary = 0;
 
                     $(document).ready(function() {
-                        //load states when changing a country dropdownlist
-                        $("#@Html.FieldIdFor(model => model.CountryId)").change(function() {
-                            var selectedItem = $(this).val();
-                            var ddlStates = $("#@Html.FieldIdFor(model => model.StateProvinceId)");
-                            $.ajax({
-                                cache: false,
-                                type: "GET",
-                                url: "@(Url.Action("GetStatesByCountryId", "Country"))",
-                                data: { "countryId": selectedItem, "addAsterisk": "true" },
-                                success: function(data) {
-                                    ddlStates.html('');
-                                    $.each(data, function(id, option) {
-                                        ddlStates.append($('<option></option>').val(option.id).html(option.name));
-                                    });
-                                },
-                                error: function(xhr, ajaxOptions, thrownError) {
-                                    alert('Failed to retrieve states.');
-                                }
-                            });
-                        });
 
-                        $("".concat("#@Html.FieldIdFor(model => model.TrackingNumber),",
-                            "#@Html.FieldIdFor(model => model.City)")).keydown(function(event) {
+                        $(function(event) {
                                 if (event.keyCode === 13) {
                                     $("#search-shipments").click();
                                     return false;
                                 }
                             });
 
+                        //search button
+                        $('#search-shipments').click(function () {
 
-                    
+                            //search
+                            var grid = $('#sales-grid').data('kendoGrid');
+                            grid.dataSource.page(1); //new search. Set page size to 1
+                            //grid.dataSource.read(); we already loaded the grid above using "page" function
+                            //clear selected checkboxes
+                            alert("mafyaları yoladım");
+                            $('.checkboxGroups').attr('checked', false).change(); 
+                            selectedIds = [];
+
+                           
+
+                            //var modelim = additionalData().StartDate;
+                            //var y = additionalData().StartDate;
+
+
+                            $.get('@Url.Action("GetSummary", new { StartDate = default(DateTime?), EndDate = default(DateTime?) })', function (data) {
+                                var result = additionalData();
+                                //var note = new SaleViewModel{}
+                                $('#getSummary').html(data);
+                            });
+
+                            return false;
+                        });
+
                         //wire up checkboxes.
-                        $('#shipments-grid').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function(e) {
+                        $('#sales-grid').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function(e) {
                             var $check = $(this);
                             if ($check.is(":checked") == true) {
                                 var checked = jQuery.inArray($check.val(), selectedIds);
@@ -215,36 +315,40 @@
                             }
                             updateMasterCheckbox();
                         });
+
+
                     });
 
                     function additionalData() {
                         var data = {
                             StartDate: $('#@Html.FieldIdFor(model => model.StartDate)').val(),
-                            EndDate: $('#@Html.FieldIdFor(model => model.EndDate)').val(),
-                            TrackingNumber: $('#@Html.FieldIdFor(model => model.TrackingNumber)').val(),
-                            CountryId: $('#@Html.FieldIdFor(model => model.CountryId)').val(),
-                            StateProvinceId: $('#@Html.FieldIdFor(model => model.StateProvinceId)').val(),
-                            City: $('#@Html.FieldIdFor(model => model.City)').val(),
-                            WarehouseId: $('#@Html.FieldIdFor(model => model.WarehouseId)').val(),
-                            LoadNotShipped: $('#@Html.FieldIdFor(model => model.LoadNotShipped)').is(':checked')
+                            EndDate: $('#@Html.FieldIdFor(model => model.EndDate)').val()
                         };
                         addAntiForgeryToken(data);
                         return data;
                     }
 
+
+
+
+
                     function onDataBound(e) {
-                        $('#shipments-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').each(function() {
+                        $('#sales-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').each(function() {
                             var currentId = $(this).val();
                             var checked = jQuery.inArray(currentId, selectedIds);
                             //set checked based on if current checkbox's value is in selectedIds.
                             $(this).attr('checked', checked > -1);
                         });
 
-                        updateMasterCheckbox();
+                        $('#transaction-number-block').text(reportSummary['TransactionNumber']);
+                        $('#total-sales-block').text(reportSummary['TotalSales']);
+                        $('#total-cost-block').text(reportSummary['TotalCost']);
+                        $('#profit-block').text(reportSummary['Profit']);
                     }
 
-                  
                 </script>
+                <div id="getSummary" name="getSummary"></div>
+
             </div>
         </div>
     </div>

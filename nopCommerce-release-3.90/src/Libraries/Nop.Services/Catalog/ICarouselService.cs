@@ -37,7 +37,7 @@ namespace Nop.Services.Catalog
         /// </summary>
         /// <param name="searchDate">Carousel identifier</param>
         /// <returns>Carousel</returns>
-        IList<Carousel> SearchCarousel(DateTime searchDate, bool isActive);
+        IList<Carousel> SearchCarousel(DateTime? searchDate, bool isActive);
 
         /// <summary>
         /// Gets carousels by identifier

@@ -2,6 +2,7 @@
 using Nop.Web.Framework.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,7 +17,8 @@ namespace Nop.Admin.Models.Catalog
         [NopResourceDisplayName("Admin.Catalog.Carousels.List.IsActive")]
         public bool IsActive { get; set; }
         [NopResourceDisplayName("Admin.Catalog.Carousels.List.SearchDate")]
-        public DateTime SearchDate { get; set; }
+        [UIHint("DateNullable")]
+        public DateTime? SearchDate { get; set; }
 
     }
 }
