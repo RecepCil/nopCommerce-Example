@@ -2933,19 +2933,7 @@ namespace Nop.Admin.Controllers
         }
 
         #endregion
-
-
-        public virtual ActionResult TrialList()
-        {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageOrders))
-                return AccessDeniedView();
-
-            SaleViewModel model = new SaleViewModel();
-            return View(model);
-        }
-
-
-
+      
         #region Sales
 
         public virtual ActionResult SaleList()
@@ -2975,13 +2963,25 @@ namespace Nop.Admin.Controllers
             return Json(gridModel);
         }
 
-        public ActionResult GetSummary(DateTime? StartDate, DateTime? EndDate)
+        public ActionResult GetSummary(string StartDate, string EndDate)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManageOrders))
                 return AccessDeniedKendoGridJson();
 
-            SaleViewModel saleViewModel = GetSaleViewModel(StartDate, EndDate, int.MaxValue);
+            SaleViewModel saleViewModel;
 
+            if (String.IsNullOrWhiteSpace(StartDate) || String.IsNullOrWhiteSpace(EndDate))
+            {
+                saleViewModel = GetSaleViewModel(null, null, int.MaxValue);
+            }
+            else
+            {
+                var _startDate = Convert.ToDateTime(StartDate).AddHours(-12);
+                var _endDate = Convert.ToDateTime(EndDate).AddHours(+12);
+
+                saleViewModel = GetSaleViewModel(_startDate, _endDate, int.MaxValue);
+            }
+            
             return View(saleViewModel);
         }
 

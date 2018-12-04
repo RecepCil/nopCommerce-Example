@@ -44,7 +44,7 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <button type="submit" name="pdf-invoice-all"    class="btn btn-success">
+                <button type="submit" name="pdf-invoice-all" class="btn btn-success">
                     <i class="fa fa-file-pdf-o"></i>
                     @T("Admin.Orders.Sales.List.DownloadPDF")
                 </button>
@@ -175,7 +175,6 @@
                                         }
                                     });
                                 });
-
                                   //details grid
                                 function detailInit(e) {
                                     $("<div/>").appendTo(e.detailCell).kendoGrid({
@@ -205,7 +204,6 @@
                                         },
                                         scrollable: false,
                                         sortable: true,
-
                                         pageable: {
                                             refresh: true,
                                             numeric: false,
@@ -242,14 +240,15 @@
                                             console.log(e.sort.dir);
                                         }
                                     });
-                                }
+                            }
 
-                                $.get('@Url.Action("GetSummary", new { StartDate = default(DateTime?), EndDate = default(DateTime?) } )', function (data) {
-                                    var result = additionalData();
-                                    alert(result.StartDate);
-                                    //var note = new SaleViewModel{}
-                                    $('#getSummary').html(data);
-                                });
+                            alert("burası başka");
+
+
+                            locationDef = '@Url.Action("GetSummary")?StartDate=' + "" + '&EndDate=' + "";
+                            $.get(locationDef, function (data) {
+                                $('#getSummary').html(data);
+                            });
 
                         </script>
                     </div>
@@ -258,43 +257,33 @@
                 <script type="text/javascript">
                     var selectedIds = [];
                     var reportSummary = 0;
-
                     $(document).ready(function() {
-
                         $(function(event) {
                                 if (event.keyCode === 13) {
                                     $("#search-shipments").click();
                                     return false;
                                 }
                             });
-
                         //search button
                         $('#search-shipments').click(function () {
 
-                            //search
                             var grid = $('#sales-grid').data('kendoGrid');
-                            grid.dataSource.page(1); //new search. Set page size to 1
-                            //grid.dataSource.read(); we already loaded the grid above using "page" function
-                            //clear selected checkboxes
-                            alert("mafyaları yoladım");
-                            $('.checkboxGroups').attr('checked', false).change(); 
+                            grid.dataSource.page(1); 
+                    
+                            /*$('.checkboxGroups').attr('checked', false).change();*/ 
                             selectedIds = [];
+                            
+                            var _StartDate = additionalData().StartDate;
+                            var _EndDate = additionalData().EndDate;
+                            location = '@Url.Action("GetSummary")?StartDate=' + _StartDate + '&EndDate=' + _EndDate;
 
-                           
-
-                            //var modelim = additionalData().StartDate;
-                            //var y = additionalData().StartDate;
-
-
-                            $.get('@Url.Action("GetSummary", new { StartDate = default(DateTime?), EndDate = default(DateTime?) })', function (data) {
-                                var result = additionalData();
-                                //var note = new SaleViewModel{}
+                            $.get(location, function (data) {
                                 $('#getSummary').html(data);
                             });
 
                             return false;
-                        });
 
+                        });
                         //wire up checkboxes.
                         $('#sales-grid').on('change', 'input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]', function(e) {
                             var $check = $(this);
@@ -315,10 +304,7 @@
                             }
                             updateMasterCheckbox();
                         });
-
-
                     });
-
                     function additionalData() {
                         var data = {
                             StartDate: $('#@Html.FieldIdFor(model => model.StartDate)').val(),
@@ -327,11 +313,6 @@
                         addAntiForgeryToken(data);
                         return data;
                     }
-
-
-
-
-
                     function onDataBound(e) {
                         $('#sales-grid input[type=checkbox][id!=mastercheckbox][class=checkboxGroups]').each(function() {
                             var currentId = $(this).val();
@@ -339,13 +320,11 @@
                             //set checked based on if current checkbox's value is in selectedIds.
                             $(this).attr('checked', checked > -1);
                         });
-
                         $('#transaction-number-block').text(reportSummary['TransactionNumber']);
                         $('#total-sales-block').text(reportSummary['TotalSales']);
                         $('#total-cost-block').text(reportSummary['TotalCost']);
                         $('#profit-block').text(reportSummary['Profit']);
                     }
-
                 </script>
                 <div id="getSummary" name="getSummary"></div>
 
